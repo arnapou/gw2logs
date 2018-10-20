@@ -116,7 +116,7 @@ include __DIR__ . '/../templates/header.php';
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
                 <ul class="pagination">
-                    <?php for ($p = 1; $p <= $LOGS->pageCount(); $p++): ?>
+                    <?php for ($p = 1, $max = min($LOGS->pageCount(), 25); $p <= $max; $p++): ?>
                         <li class="page-item <?= $LOGS->pageNum() == $p ? 'active' : '' ?>">
                             <button type="submit" class="page-link" data-offset="<?= $LOGS->length() * ($p - 1) ?>"><?= $p ?></button>
                         </li>
