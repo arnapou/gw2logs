@@ -5,6 +5,7 @@ namespace App;
 
 
 use App\Processing\AbstractProcessing;
+use Psr\Log\LoggerInterface;
 
 class ProcessingStack
 {
@@ -20,17 +21,19 @@ class ProcessingStack
      */
     private $logs = [];
     /**
-     * @var array
+     * @var LoggerInterface
      */
-    private $errors = [];
+    private $logger;
 
     /**
      * ProcessingStack constructor.
      * @param AbstractProcessing $processing
+     * @param LoggerInterface    $logger
      */
-    public function __construct(AbstractProcessing $processing)
+    public function __construct(AbstractProcessing $processing, LoggerInterface $logger)
     {
         $this->processing = $processing;
+        $this->logger     = $logger;
     }
 
     /**
@@ -60,27 +63,22 @@ class ProcessingStack
     }
 
     /**
-     * @return array
-     */
-    public function errors()
-    {
-        return $this->errors;
-    }
-
-    /**
      *
      */
     public function process()
     {
+        $tagName = $this->processing->getTagName();
         foreach ($this->logs as $log) {
             try {
                 if ($this->isNextProcessingReached($log->metadata())) {
                     $this->processing->process($log);
-                    $log->metadata()->set('processed_' . $this->processing->getTagName(), time())->save();
-                    $log->metadata()->addTag($this->processing->getTagName())->save();
+                    $log->metadata()->set('processed_' . $tagName, time())->save();
+                    $log->metadata()->addTag($tagName)->save();
+
+                    $this->logger->info('processed', [$log->filename(), $tagName]);
                 }
             } catch (\Exception $exception) {
-                $this->errors[] = ['log' => $log, 'exception' => $exception];
+                $this->logger->error($exception->getMessage(), [$log->filename(), $tagName]);
                 $this->errorProcessing($log);
             }
         }

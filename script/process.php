@@ -1,6 +1,7 @@
 <?php
 
 use App\Log;
+use App\Logger\StdOutLogger;
 use App\LogMetadata;
 use App\Processing\DpsReportProcessing;
 use App\Processing\Gw2RaidarProcessing;
@@ -12,11 +13,12 @@ require __DIR__ . '/../vendor/autoload.php';
 $dateLimit      = new DateTimeImmutable('@' . (time() - PROCESS_MAX_EXECUTION_TIME));
 $dateDeleteFail = new DateTimeImmutable('@' . (time() - FAIL_LOG_MAX_RETENTION));
 $dateDeleteKill = new DateTimeImmutable('@' . (time() - KILL_LOG_MAX_RETENTION));
+$logger         = new StdOutLogger();
 
 $processors = [
-    LogMetadata::TAG_DPSREPORT    => new ProcessingStack(new DpsReportProcessing()),
-    LogMetadata::TAG_GW2RAIDAR    => new ProcessingStack(new Gw2RaidarProcessing()),
-    LogMetadata::TAG_GW2RAIDARURL => new ProcessingStack(new Gw2RaidarUrlProcessing()),
+    LogMetadata::TAG_DPSREPORT    => new ProcessingStack(new DpsReportProcessing(), $logger),
+    LogMetadata::TAG_GW2RAIDAR    => new ProcessingStack(new Gw2RaidarProcessing(), $logger),
+    LogMetadata::TAG_GW2RAIDARURL => new ProcessingStack(new Gw2RaidarUrlProcessing(), $logger),
 ];
 
 foreach (Log::all() as $log) {
@@ -48,13 +50,4 @@ foreach (Log::all() as $log) {
 /** @var ProcessingStack[] $processors */
 foreach ($processors as $processor) {
     $processor->process();
-
-    foreach ($processor->errors() as $error) {
-        echo implode("\t ", [
-                    $error['log']->filename(),
-                    $processor->getProcessing()->getTagName(),
-                    $error['exception']->getMessage(),
-                ]
-            ) . "\n";
-    }
 }

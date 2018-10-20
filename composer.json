@@ -3,7 +3,8 @@
     "description": "GW2 logs",
     "require": {
         "php": ">= 7.2",
-        "symfony/cache": "^4.0"
+        "symfony/cache": "^4.0",
+        "psr/log": "^1.0"
     },
     "autoload": {
         "files": [
