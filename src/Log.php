@@ -196,6 +196,7 @@ class Log
             throw new RuntimeException('Upload move error');
         }
         chmod($log->pathname(), 0777);
+        $log->metadata->set('time_uploaded', time())->save();
         return $log;
     }
 
