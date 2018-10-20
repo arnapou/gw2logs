@@ -69,7 +69,7 @@ include __DIR__ . '/../templates/header.php';
             <label for="filtre1" class="col-sm-1 col-form-label">Filtres</label>
             <?php for ($i = 0; $i < 4; $i++): ?>
                 <div class="col-sm-2">
-                    <input type="text" name="filtres[]" class="form-control" value="<?= $LOGS->getFiltre($i) ?? '' ?>">
+                    <input type="text" name="filtres[]" class="form-control" value="<?= $LOGS->filtre($i) ?? '' ?>">
                 </div>
             <?php endfor; ?>
             <div class="col-sm-3">
@@ -113,13 +113,20 @@ include __DIR__ . '/../templates/header.php';
 
         <?php if ($LOGS->pageCount() > 1): ?>
             <nav>
+                <em class="float-right text-primary"><?= $LOGS->count() ?> logs</em>
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
                 <ul class="pagination">
-                    <?php for ($p = 1, $max = min($LOGS->pageCount(), 25); $p <= $max; $p++): ?>
-                        <li class="page-item <?= $LOGS->pageNum() == $p ? 'active' : '' ?>">
-                            <button type="submit" class="page-link" data-offset="<?= $LOGS->length() * ($p - 1) ?>"><?= $p ?></button>
-                        </li>
+                    <?php for ($p = 1; $p <= $LOGS->pageCount(); $p++): ?>
+                        <?php if ($p > 20): ?>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item disabled"><span class="page-link"><?= $LOGS->pageCount() ?></span></li>
+                            <?php break; ?>
+                        <?php else: ?>
+                            <li class="page-item <?= $LOGS->pageNum() == $p ? 'active' : '' ?>">
+                                <button type="submit" class="page-link" data-offset="<?= $LOGS->length() * ($p - 1) ?>"><?= $p ?></button>
+                            </li>
+                        <?php endif; ?>
                     <?php endfor; ?>
                 </ul>
             </nav>

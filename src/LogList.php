@@ -91,9 +91,17 @@ class LogList implements \IteratorAggregate
     }
 
     /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->logs);
+    }
+
+    /**
      * @return array
      */
-    public function getFiltres()
+    public function filtres()
     {
         return $this->filtres;
     }
@@ -102,7 +110,7 @@ class LogList implements \IteratorAggregate
      * @param $num
      * @return array
      */
-    public function getFiltre($num)
+    public function filtre($num)
     {
         return $this->filtres[$num] ?? '';
     }
