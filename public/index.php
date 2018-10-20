@@ -113,7 +113,7 @@ include __DIR__ . '/../templates/header.php';
 
         <?php if ($LOGS->pageCount() > 1): ?>
             <nav>
-                <em class="float-right text-primary"><?= $LOGS->count() ?> logs</em>
+                <small class="float-right text-primary"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?></small>
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
                 <ul class="pagination">

@@ -101,6 +101,14 @@ class Log
     }
 
     /**
+     * @return int
+     */
+    public function size()
+    {
+        return is_file($this->pathname()) ? filesize($this->pathname()) : 0;
+    }
+
+    /**
      * @return mixed
      */
     public function filename()

@@ -115,5 +115,16 @@ class LogList implements \IteratorAggregate
         return $this->filtres[$num] ?? '';
     }
 
+    /**
+     * @return string
+     */
+    public function size()
+    {
+        $size = 0;
+        foreach ($this->logs as $log) {
+            $size += $log->size();
+        }
+        return $size / (1024 * 1024);
+    }
 
 }
