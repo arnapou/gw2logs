@@ -9,7 +9,9 @@ use App\ProcessingStack;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dateLimit = new DateTimeImmutable('@' . (time() - PROCESS_MAX_EXECUTION_TIME));
+$dateLimit      = new DateTimeImmutable('@' . (time() - PROCESS_MAX_EXECUTION_TIME));
+$dateDeleteFail = new DateTimeImmutable('@' . (time() - FAIL_LOG_MAX_RETENTION));
+$dateDeleteKill = new DateTimeImmutable('@' . (time() - KILL_LOG_MAX_RETENTION));
 
 $processors = [
     LogMetadata::TAG_DPSREPORT    => new ProcessingStack(new DpsReportProcessing()),
@@ -18,7 +20,15 @@ $processors = [
 ];
 
 foreach (Log::all() as $log) {
+    /** @var Log $log */
     $metadata = $log->metadata();
+
+    if ($metadata->getStatus() === LogMetadata::STATUS_FAIL && $metadata->lastModified() < $dateDeleteFail ||
+        $metadata->getStatus() === LogMetadata::STATUS_KILL && $metadata->lastModified() < $dateDeleteKill
+    ) {
+        $log->delete();
+        continue;
+    }
 
     if (
         $metadata->hasTag(LogMetadata::TAG_PROCESSING) && $metadata->lastModified() > $dateLimit ||
