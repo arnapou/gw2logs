@@ -11,6 +11,7 @@ class LogMetadata
     const TAG_GW2RAIDARURL = 'gw2raidarurl';
     const TAG_DPSREPORT = 'dpsreport';
     const TAG_DISABLED = 'disabled';
+
     const STATUS_KILL = 'kill';
     const STATUS_FAIL = 'fail';
     /**
