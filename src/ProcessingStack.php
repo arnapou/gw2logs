@@ -76,6 +76,7 @@ class ProcessingStack
             try {
                 if ($this->isNextProcessingReached($log->metadata())) {
                     $this->processing->process($log);
+                    $log->metadata()->set('processed_' . $this->processing->getTagName(), time())->save();
                     $log->metadata()->addTag($this->processing->getTagName())->save();
                 }
             } catch (\Exception $exception) {

@@ -37,6 +37,8 @@ class Gw2RaidarUrlProcessing extends AbstractProcessing
             }
         }
 
+        $this->resetGw2raidarTagIfItWasProcessedALongTimeAgo($log);
+
         throw new \Exception('Url not found on raidar');
     }
 
@@ -56,5 +58,19 @@ class Gw2RaidarUrlProcessing extends AbstractProcessing
                 );
                 return $data['results'] ?? [];
             }, 300);
+    }
+
+    /**
+     *
+     * It will force the process to upload it again in case there was a problem
+     *
+     * @param Log $log
+     */
+    private function resetGw2raidarTagIfItWasProcessedALongTimeAgo(Log $log)
+    {
+        $gw2raidarProcessedTime = $log->metadata()->get('processed_' . LogMetadata::TAG_GW2RAIDAR);
+        if (time() - $gw2raidarProcessedTime > 6 * 3600) {
+            $log->metadata()->removeTag(LogMetadata::TAG_GW2RAIDAR)->save();
+        }
     }
 }
