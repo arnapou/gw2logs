@@ -42,7 +42,7 @@ function wday(Log $log)
 $LOGS = Log::all(
     $_REQUEST['filtres'] ?? [],
     $_REQUEST['offset'] ?? 0,
-    $_REQUEST['length'] ?? 100
+    $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
 );
 
 include __DIR__ . '/../templates/header.php';

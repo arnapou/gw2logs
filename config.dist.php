@@ -11,6 +11,8 @@ define('ACCOUNTS', [
     'Account.1234'     => '<api_key>',
 ]);
 
+define('LOGS_DEFAULT_PAGE_LENGTH', 20);
+
 define('PROCESS_MAX_EXECUTION_TIME', 900);
 define('PROCESS_INTERVAL_INCREMENT', 300);
 define('PROCESS_INTERVAL_MAXIMUM', 3600);
