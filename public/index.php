@@ -8,7 +8,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 define('EMPTY_TEXT', '<em class="text-muted">-</em>');
 define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
-define('FILTRES', $_REQUEST['filtres'] ?? []);
 
 function lnk($url, $icon, $title = '')
 {
@@ -40,6 +39,12 @@ function wday(Log $log)
     return ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][$wday] ?? '';
 }
 
+$LOGS = Log::all(
+    $_REQUEST['filtres'] ?? [],
+    $_REQUEST['offset'] ?? 0,
+    $_REQUEST['length'] ?? 100
+);
+
 include __DIR__ . '/../templates/header.php';
 ?>
     <style>
@@ -59,52 +64,77 @@ include __DIR__ . '/../templates/header.php';
     </style>
 
     <form action="?" method="get" class="filtres">
+
         <div class="row">
             <label for="filtre1" class="col-sm-1 col-form-label">Filtres</label>
             <?php for ($i = 0; $i < 4; $i++): ?>
                 <div class="col-sm-2">
-                    <input type="text" name="filtres[]" class="form-control" value="<?= FILTRES[$i] ?? '' ?>">
+                    <input type="text" name="filtres[]" class="form-control" value="<?= $LOGS->getFiltre($i) ?? '' ?>">
                 </div>
             <?php endfor; ?>
             <div class="col-sm-3">
                 <button type="submit" class="btn btn-primary">OK</button>
-                <a href="/" class="btn btn-danger">RESET</a>
+                <a href="/" class="btn btn-danger">Cancel</a>
             </div>
         </div>
+
+        <table class="table table-striped table-hover table-sm" style="margin-top: 1em">
+            <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Date</th>
+                <th>Boss</th>
+                <th>dps.report</th>
+                <th>gw2raidar</th>
+                <th>Compte</th>
+                <th>Perso</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($LOGS as $log) : ?>
+                <?php
+                $metadata = $log->metadata();
+                $player   = player($log->metadata());
+                ?>
+                <tr class="<?= $metadata->getStatus() ?>">
+                    <td class="xs"><a href="/dl.php?log=<?= $log->filename() ?>"><img src="/assets/zip.png"/></a></td>
+                    <td class="xs"><?= wday($log) ?></td>
+                    <td><?= $log->datetime() ?></td>
+                    <td><?= $metadata->getBoss() ?: ($metadata->hasTag(LogMetadata::TAG_PROCESSING) ? PROCESSING_TEXT : EMPTY_TEXT) ?></td>
+                    <td><?= lnk($metadata->getUrlDpsReport(), 'dpsreport') ?></td>
+                    <td><?= lnk($metadata->getUrlRaidar(), 'gw2raidar') ?></td>
+                    <td><?= $player['display_name'] ?? EMPTY_TEXT ?></td>
+                    <td><?= prof($player) . $player['character_name'] ?? EMPTY_TEXT ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php if ($LOGS->pageCount() > 1): ?>
+            <nav>
+                <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
+                <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
+                <ul class="pagination">
+                    <?php for ($p = 1; $p <= $LOGS->pageCount(); $p++): ?>
+                        <li class="page-item <?= $LOGS->pageNum() == $p ? 'active' : '' ?>">
+                            <button type="submit" class="page-link" data-offset="<?= $LOGS->length() * ($p - 1) ?>"><?= $p ?></button>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+        <?php endif; ?>
+
     </form>
 
-    <table class="table table-striped table-hover table-sm" style="margin-top: 1em">
-        <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th>Date</th>
-            <th>Boss</th>
-            <th>dps.report</th>
-            <th>gw2raidar</th>
-            <th>Compte</th>
-            <th>Perso</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach (Log::all(FILTRES) as $log) : ?>
-            <?php
-            $metadata = $log->metadata();
-            $player   = player($log->metadata());
-            ?>
-            <tr class="<?= $metadata->getStatus() ?>">
-                <td class="xs"><a href="/dl.php?log=<?= $log->filename() ?>"><img src="/assets/zip.png"/></a></td>
-                <td class="xs"><?= wday($log) ?></td>
-                <td><?= $log->datetime() ?></td>
-                <td><?= $metadata->getBoss() ?: ($metadata->hasTag(LogMetadata::TAG_PROCESSING) ? PROCESSING_TEXT : EMPTY_TEXT) ?></td>
-                <td><?= lnk($metadata->getUrlDpsReport(), 'dpsreport') ?></td>
-                <td><?= lnk($metadata->getUrlRaidar(), 'gw2raidar') ?></td>
-                <td><?= $player['display_name'] ?? EMPTY_TEXT ?></td>
-                <td><?= prof($player) . $player['character_name'] ?? EMPTY_TEXT ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+    <script>
+        $(function () {
+            $('.pagination button').on('click', function () {
+                var offset = $(this).data('offset');
+                $('input[name=offset]').val(offset || 0);
+            });
+        });
+    </script>
 
 <?php
 

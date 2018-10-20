@@ -141,4 +141,21 @@ class Utils
         self::writeFile($filename, "<?php return " . var_export($content, true) . ";\n");
     }
 
+    /**
+     * @param int $value
+     * @param int $min
+     * @param int $default
+     * @return int
+     */
+    public static function validInteger($value, $min, $default)
+    {
+        if (!ctype_digit("$value")) {
+            return $default;
+        }
+        if ($value < $min) {
+            return $min;
+        }
+        return $value;
+    }
+
 }

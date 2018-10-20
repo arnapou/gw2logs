@@ -3,6 +3,7 @@
 namespace App;
 
 
+use CallbackFilterIterator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -192,27 +193,36 @@ class Log
 
     /**
      * @param array $filtres
-     * @return Log[]
+     * @param int   $offset
+     * @param int   $length
+     * @return LogList
      */
-    static function all($filtres = [])
+    static function all($filtres = [], $offset = 0, $length = 100)
     {
+        $offset    = Utils::validInteger($offset, 0, 0);
+        $length    = Utils::validInteger($length, 0, 100);
         $filtres   = is_array($filtres) ? $filtres : [];
         $directory = new \RecursiveDirectoryIterator(__DIR__ . '/../logs', \FilesystemIterator::SKIP_DOTS);
         $iterator  = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::LEAVES_ONLY);
-        $logs      = [];
-        foreach ($iterator as $file) {
-            /** @var $file \SplFileInfo */
-            if (preg_match(self::FILENAME_REGEXP, $file->getBasename())) {
-                $log = new Log($file->getBasename());
-                if ($log->match($filtres)) {
-                    $logs[] = $log;
+        $logs      = iterator_to_array(
+            new CallbackFilterIterator(
+                $iterator,
+                function (\SplFileInfo &$current, $key, $iterator) use ($filtres) {
+                    if (preg_match(self::FILENAME_REGEXP, $current->getBasename())) {
+                        $log = new Log($current->getBasename());
+                        if ($log->match($filtres)) {
+                            $current = $log;
+                            return true;
+                        }
+                    }
+                    return false;
                 }
-            }
-        }
+            )
+        );
         usort($logs, function (Log $a, Log $b) {
             return -strcmp($a->filename(), $b->filename());
         });
-        return $logs;
+        return new LogList($logs, $offset, $length, $filtres);
     }
 
 }
