@@ -10,20 +10,15 @@ include __DIR__ . '/../templates/header.php';
 
 if (isset($_REQUEST['history'])) {
 
-    if (is_file(ProcessLogger::getFilename())) {
-        $LINES = loadLines(200);
-    }
-
     ?>
     <style>
         div.log {
             font-family: monospace;
             white-space: pre;
-            font-size: .8em;
         }
     </style>
     <?php
-    foreach ($LINES as $line) {
+    foreach (loadLines(200) as $line) {
         $isError = strpos($line, ' ERROR ') !== false;
         $color   = $isError ? 'red' : 'black';
         ?>
@@ -179,6 +174,9 @@ function wday(Log $log)
 
 function loadLines($nb)
 {
+    if (!is_file(ProcessLogger::getFilename())) {
+        return [];
+    }
     $lines = [];
     $fp    = fopen(ProcessLogger::getFilename(), "r");
     while (!feof($fp)) {
