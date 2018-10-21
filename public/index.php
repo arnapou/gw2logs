@@ -103,7 +103,7 @@ if (isset($_REQUEST['history'])) {
         <?php if ($LOGS->pageCount() > 1): ?>
             <nav>
                 <small class="float-right text-primary text-right">
-                    <a href="?history=1"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?></a>
+                    <a href="?history=1"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?> busy &mdash; <?= disk() ?> free</a>
                 </small>
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
@@ -203,4 +203,13 @@ function loadLines($nb)
     }
     fclose($fp);
     return array_reverse($lines);
+}
+
+function disk()
+{
+    $octets    = disk_free_space(__DIR__ . '/../logs/');
+    $megaBytes = $octets / (1024 * 1024);
+    return $megaBytes > 1024
+        ? number_format($megaBytes/1024, 1, '.', ',') . ' GB'
+        : number_format($megaBytes, 0, '.', ',') . ' MB';
 }
