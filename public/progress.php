@@ -3,7 +3,6 @@
 use App\Api\Raids;
 
 require __DIR__ . '/../vendor/autoload.php';
-
 include __DIR__ . '/../templates/header.php';
 
 $TOTAL = 0;
@@ -87,7 +86,7 @@ $NUM   = 0;
             <div class="card text-white bg-secondary">
                 <h5 class="card-header">
                     <span class="float-right"><?= $NUM ?> / <?= $TOTAL ?></span>
-                    Total : <?= number_format(100*$NUM/($TOTAL ?: 1), 0, '.', '') ?>%
+                    Total : <?= number_format(100 * $NUM / ($TOTAL ?: 1), 0, '.', '') ?>%
                 </h5>
             </div>
 

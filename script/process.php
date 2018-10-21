@@ -1,7 +1,7 @@
 <?php
 
 use App\Log;
-use App\Logger\StdOutLogger;
+use App\Logger\ProcessLogger;
 use App\LogMetadata;
 use App\Processing\DpsReportProcessing;
 use App\Processing\Gw2RaidarProcessing;
@@ -13,7 +13,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $dateLimit      = new DateTimeImmutable('@' . (time() - PROCESS_MAX_EXECUTION_TIME));
 $dateDeleteFail = new DateTimeImmutable('@' . (time() - FAIL_LOG_MAX_RETENTION));
 $dateDeleteKill = new DateTimeImmutable('@' . (time() - KILL_LOG_MAX_RETENTION));
-$logger         = new StdOutLogger();
+$logger         = new ProcessLogger();
 
 $processors = [
     LogMetadata::TAG_DPSREPORT    => new ProcessingStack(new DpsReportProcessing(), $logger),

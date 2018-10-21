@@ -2,51 +2,47 @@
 
 use App\Api\Profession;
 use App\Log;
+use App\Logger\ProcessLogger;
 use App\LogMetadata;
 
 require __DIR__ . '/../vendor/autoload.php';
-
-define('EMPTY_TEXT', '<em class="text-muted">-</em>');
-define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
-
-function lnk($url, $icon, $title = '')
-{
-    return $url
-        ? '<a href="' . $url . '"><img src="/assets/icon_' . $icon . '.png"/>' . ($title ?: $icon) . '</a>'
-        : EMPTY_TEXT;
-}
-
-function prof($player)
-{
-    return $player['profession_icon']
-        ? '<img src="' . $player['profession_icon'] . '"/>'
-        : '';
-}
-
-function player(LogMetadata $metadata)
-{
-    foreach ($metadata->getPlayers() as $player) {
-        if (\in_array($player['display_name'], array_keys(ACCOUNTS))) {
-            return $player + Profession::fromPlayer($player);
-        }
-    }
-    return [];
-}
-
-function wday(Log $log)
-{
-    $wday = date('w', strtotime($log->datetime()));
-    return ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][$wday] ?? '';
-}
-
-$LOGS = Log::all(
-    $_REQUEST['filtres'] ?? [],
-    $_REQUEST['offset'] ?? 0,
-    $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
-);
-
 include __DIR__ . '/../templates/header.php';
-?>
+
+if (isset($_REQUEST['history'])) {
+
+    if (is_file(ProcessLogger::getFilename())) {
+        $LINES = loadLines(200);
+    }
+
+    ?>
+    <style>
+        div.log {
+            font-family: monospace;
+            white-space: pre;
+            font-size: .8em;
+        }
+    </style>
+    <?php
+    foreach ($LINES as $line) {
+        $isError = strpos($line, ' ERROR ') !== false;
+        $color   = $isError ? 'red' : 'black';
+        ?>
+        <div class="log" style="color: <?= $color ?>"><?= $line ?></div>
+        <?php
+    }
+
+} else {
+
+    define('EMPTY_TEXT', '<em class="text-muted">-</em>');
+    define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
+
+    $LOGS = Log::all(
+        $_REQUEST['filtres'] ?? [],
+        $_REQUEST['offset'] ?? 0,
+        $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
+    );
+
+    ?>
     <style>
         tr img {
             max-height: 1.4em;
@@ -113,7 +109,9 @@ include __DIR__ . '/../templates/header.php';
 
         <?php if ($LOGS->pageCount() > 1): ?>
             <nav>
-                <small class="float-right text-primary"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?></small>
+                <small class="float-right text-primary text-right">
+                    <a href="?history=1"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?></a>
+                </small>
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
                 <ul class="pagination">
@@ -143,6 +141,53 @@ include __DIR__ . '/../templates/header.php';
         });
     </script>
 
-<?php
+    <?php
+}
 
 include __DIR__ . '/../templates/footer.php';
+
+
+function lnk($url, $icon, $title = '')
+{
+    return $url
+        ? '<a href="' . $url . '"><img src="/assets/icon_' . $icon . '.png"/>' . ($title ?: $icon) . '</a>'
+        : EMPTY_TEXT;
+}
+
+function prof($player)
+{
+    return $player['profession_icon']
+        ? '<img src="' . $player['profession_icon'] . '"/>'
+        : '';
+}
+
+function player(LogMetadata $metadata)
+{
+    foreach ($metadata->getPlayers() as $player) {
+        if (\in_array($player['display_name'], array_keys(ACCOUNTS))) {
+            return $player + Profession::fromPlayer($player);
+        }
+    }
+    return [];
+}
+
+function wday(Log $log)
+{
+    $wday = date('w', strtotime($log->datetime()));
+    return ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][$wday] ?? '';
+}
+
+function loadLines($nb)
+{
+    $lines = [];
+    $fp    = fopen(ProcessLogger::getFilename(), "r");
+    while (!feof($fp)) {
+        $line = fgets($fp, 40960);
+        array_push($lines, trim($line));
+        if (count($lines) > $nb) {
+            array_shift($lines);
+        }
+    }
+    fclose($fp);
+    return array_reverse($lines);
+}
