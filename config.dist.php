@@ -8,16 +8,16 @@ define('DPSREPORT_URL', 'https://dps.report/');
 define('DPSREPORT_TOKEN', '<token>');
 
 define('ACCOUNTS', [
-    'Account.1111'     => '<api_key>',
-    'Account.2222'     => '<api_key>',
-    'Account.3333'     => '<api_key>',
+    'Account.1111' => '<api_key>',
+    'Account.2222' => '<api_key>',
+    'Account.3333' => '<api_key>',
 ]);
 
 define('LOGS_DEFAULT_PAGE_LENGTH', 20);
 
 define('PROCESS_MAX_EXECUTION_TIME', 900);
 define('PROCESS_INTERVAL_INCREMENT', 300);
-define('PROCESS_INTERVAL_MAXIMUM', 3600);
+define('PROCESS_INTERVAL_MAXIMUM', 4 * 3600);
 define('PROCESS_TTL_BEFORE_DISABLED', 7 * 86400);
 
 define('FAIL_LOG_MAX_RETENTION', 86400 * 15);

@@ -41,12 +41,15 @@ class ProcessLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
-        $line = sprintf("[%s] %-9s %s    %s\n",
-            date('Y-m-d H:i:s'),
-            strtoupper($level),
-            implode('    ', $context),
-            $message
-        );
+        $columns   = [date('Y-m-d H:i:s'), strtoupper($level)];
+        $columns   = array_merge($columns, $context);
+        $columns[] = $message;
+
+        array_walk($columns, function (&$str) {
+            $str = str_replace("\t", " ", $str);
+        });
+
+        $line = implode("\t", $columns) . "\n";
 
         echo $line;
         fwrite($this->logfile, $line);

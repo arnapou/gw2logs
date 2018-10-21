@@ -11,20 +11,18 @@ include __DIR__ . '/../templates/header.php';
 if (isset($_REQUEST['history'])) {
 
     ?>
-    <style>
-        div.log {
-            font-family: monospace;
-            white-space: pre;
-        }
-    </style>
+    <table class="table table-sm table-hover" style="margin-bottom: 15em">
+        <?php foreach (loadLines(200) as $cols): ?>
+            <tr class="<?= $cols[1] != 'INFO' ? 'table-danger' : '' ?>">
+                <td><?= $cols[0] ?></td>
+                <td><?= $cols[1] ?></td>
+                <td><?= $cols[2] ?></td>
+                <td><?= $cols[3] ?></td>
+                <td><?= $cols[4] ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
     <?php
-    foreach (loadLines(200) as $line) {
-        $isError = strpos($line, ' ERROR ') !== false;
-        $color   = $isError ? 'red' : 'black';
-        ?>
-        <div class="log" style="color: <?= $color ?>"><?= $line ?></div>
-        <?php
-    }
 
 } else {
 
@@ -177,13 +175,30 @@ function loadLines($nb)
     if (!is_file(ProcessLogger::getFilename())) {
         return [];
     }
-    $lines = [];
-    $fp    = fopen(ProcessLogger::getFilename(), "r");
+    $parseLine = function ($line) {
+        if ($line) {
+            $line    = trim(trim($line), '[');
+            $line    = str_replace('] ', '    ', $line);
+            $line    = preg_replace('!    +!', '    ', $line);
+            $columns = strpos($line, "\t") !== false
+                ? explode("\t", $line)
+                : explode('    ', $line);
+            if (count($columns) >= 5) {
+                return array_map('trim', $columns);
+            }
+        }
+        return null;
+    };
+    $lines     = [];
+    $fp        = fopen(ProcessLogger::getFilename(), "r");
     while (!feof($fp)) {
-        $line = fgets($fp, 40960);
-        array_push($lines, trim($line));
-        if (count($lines) > $nb) {
-            array_shift($lines);
+        $line    = fgets($fp, 40960);
+        $columns = $parseLine($line);
+        if ($columns) {
+            array_push($lines, $columns);
+            if (count($lines) > $nb) {
+                array_shift($lines);
+            }
         }
     }
     fclose($fp);
