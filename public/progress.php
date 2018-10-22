@@ -7,6 +7,12 @@ include __DIR__ . '/../templates/header.php';
 
 $TOTAL = 0;
 $NUM   = 0;
+foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken) {
+    $data  = Raids::progress($accessToken);
+    $TOTAL += $data['total'];
+    $NUM   += $data['num'];
+}
+$PCT = 100 * $NUM / ($TOTAL ?: 1);
 
 ?>
     <style>
@@ -40,18 +46,30 @@ $NUM   = 0;
         }
 
         .card-body table td:first-child {
-            padding: 0 .5em 0 2em;
+            padding: 0 .5em 0 3em;
+        }
+
+        .progress {
+            height: 2em;
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
         }
     </style>
 
     <div class="row">
-        <?php foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken): ?>
+        <div class="col-sm-4">
+            <div class="card">
+                <h5 class="card-header text-muted">
+                    <span class="float-right text-primary"><?= $NUM ?> / <?= $TOTAL ?></span>
+                    Total : <?= round($PCT) ?>%
+                </h5>
+            </div>
+        </div>
+    </div>
 
-            <?php
-            $data  = Raids::progress($accessToken);
-            $TOTAL += $data['total'];
-            $NUM   += $data['num'];
-            ?>
+    <div class="row">
+        <?php foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken): ?>
+            <?php $data = Raids::progress($accessToken); ?>
 
             <div class="col-sm-4">
                 <div class="card">
@@ -82,15 +100,6 @@ $NUM   = 0;
 
         <?php endforeach; ?>
 
-        <div class="col-sm-4">
-            <div class="card text-white bg-secondary">
-                <h5 class="card-header">
-                    <span class="float-right"><?= $NUM ?> / <?= $TOTAL ?></span>
-                    Total : <?= number_format(100 * $NUM / ($TOTAL ?: 1), 0, '.', '') ?>%
-                </h5>
-            </div>
-
-        </div>
     </div>
 
 <?php
