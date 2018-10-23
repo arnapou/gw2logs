@@ -3,6 +3,7 @@
 namespace App\Processing;
 
 use App\Log;
+use App\Logger\ProcessLogger;
 use App\LogMetadata;
 use App\Utils;
 use Psr\SimpleCache\CacheInterface;
@@ -39,7 +40,7 @@ class Gw2RaidarUrlProcessing extends AbstractProcessing
 
         $this->resetGw2raidarTagIfItWasProcessedALongTimeAgo($log);
 
-        throw new \Exception('Url not found on raidar');
+        throw new \Exception('Url not found on raidar', ProcessLogger::CODE_NOTICE);
     }
 
     /**

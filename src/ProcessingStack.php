@@ -96,6 +96,7 @@ class ProcessingStack
         if ($this->isProcessingTooOld($metadata)) {
             if (\count($metadata->getTags()) <= 1) {
                 $log->delete(); // There was no processing at all
+                $this->logger->error('Delete recurrent log in error', [$log->filename(), $this->processing->getTagName()]);
             } else {
                 $metadata->addTag(LogMetadata::TAG_DISABLED);
             }
