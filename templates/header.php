@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gw2 <?= MENU[$CURRENT_URL] ?? '' ?></title>
+    <title>Gw2 <?= $TITLE ?? '' ?></title>
     <link rel="stylesheet" href="/assets/bootstrap-4.1.3-dist/css/bootstrap.min.css">
     <script src="/assets/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
     <script src="/assets/jquery/jquery-3.3.1.slim.min.js"></script>
