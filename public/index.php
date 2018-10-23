@@ -163,7 +163,7 @@ function prof($player)
 function player(LogMetadata $metadata)
 {
     foreach ($metadata->getPlayers() as $player) {
-        if (\in_array($player['display_name'], array_keys(ACCOUNTS))) {
+        if (\in_array($player['display_name'], all_configured_players())) {
             return $player + Profession::fromPlayer($player);
         }
     }
@@ -218,4 +218,16 @@ function disk()
     return $megaBytes > 1024
         ? number_format($megaBytes / 1024, 1, '.', ',') . ' GB'
         : number_format($megaBytes, 0, '.', ',') . ' MB';
+}
+
+function all_configured_players()
+{
+    static $accounts;
+    if (!isset($accounts)) {
+        $accounts = [];
+        foreach (ACCOUNTS as $name => $config) {
+            $accounts = array_merge($accounts, array_keys($config['keys'] ?? []));
+        }
+    }
+    return $accounts;
 }
