@@ -96,7 +96,7 @@ if (isset($_REQUEST['history'])) {
                     <td><?= $metadata->getBoss() ?: ($metadata->hasTag(LogMetadata::TAG_PROCESSING) ? PROCESSING_TEXT : EMPTY_TEXT) ?></td>
                     <td><?= lnk($metadata->getUrlDpsReport(), 'dpsreport') ?></td>
                     <td><?= lnk($metadata->getUrlRaidar(), 'gw2raidar') ?></td>
-                    <td><?= $player['display_name'] ?? EMPTY_TEXT ?></td>
+                    <td title="<?= players($log->metadata()) ?>"><?= $player['display_name'] ?? EMPTY_TEXT ?></td>
                     <td><?= prof($player) . $player['character_name'] ?? EMPTY_TEXT ?></td>
                 </tr>
             <?php endforeach; ?>
@@ -162,12 +162,24 @@ function prof($player)
 
 function player(LogMetadata $metadata)
 {
-    foreach ($metadata->getPlayers() as $player) {
-        if (\in_array($player['display_name'], all_configured_players())) {
-            return $player + Profession::fromPlayer($player);
+    foreach (all_configured_players() as $account) {
+        foreach ($metadata->getPlayers() as $player) {
+            if ($account == $player['display_name']) {
+                return $player + Profession::fromPlayer($player);
+            }
         }
     }
     return [];
+}
+
+function players(LogMetadata $metadata)
+{
+    $players = [];
+    foreach ($metadata->getPlayers() as $player) {
+        $players[] = $player['display_name'];
+    }
+    sort($players);
+    return implode("\n", $players);
 }
 
 function wday(Log $log)
