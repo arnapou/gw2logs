@@ -5,15 +5,6 @@ use App\Api\Raids;
 require __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/../templates/header.php';
 
-$TOTAL = 0;
-$NUM   = 0;
-foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken) {
-    $data  = Raids::progress($accessToken);
-    $TOTAL += $data['total'];
-    $NUM   += $data['num'];
-}
-$PCT = 100 * $NUM / ($TOTAL ?: 1);
-
 ?>
     <style>
         .boss {
@@ -53,23 +44,39 @@ $PCT = 100 * $NUM / ($TOTAL ?: 1);
             font-size: 1rem;
         }
 
-        .card-header .float-right {
+        .card-header small.float-right {
             padding-top: .2em;
         }
     </style>
 
+<?php
+if ($SUMMARY ?? true) {
+    $TOTAL = 0;
+    $NUM   = 0;
+    foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken) {
+        $data  = Raids::progress($accessToken);
+        $TOTAL += $data['total'];
+        $NUM   += $data['num'];
+    }
+    $PCT = 100 * $NUM / ($TOTAL ?: 1);
+
+    ?>
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-md-6">
             <div class="card">
                 <h5 class="card-header text-muted">
                     <span class="float-right text-primary">
-                        <?= $NUM ?> <small>/ <?= $TOTAL ?></small>
+                        <?= $NUM ?>
+                        <small>/ <?= $TOTAL ?></small>
                     </span>
                     Total : <?= round($PCT) ?>%
                 </h5>
             </div>
         </div>
     </div>
+    <?php
+}
+?>
 
     <div class="row">
         <?php foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken): ?>
@@ -79,7 +86,8 @@ $PCT = 100 * $NUM / ($TOTAL ?: 1);
                 <div class="card">
                     <h5 class="card-header">
                         <small class="float-right">
-                            <?= $data['num'] ?> <small>/ <?= $data['total'] ?></small>
+                            <?= $data['num'] ?>
+                            <small>/ <?= $data['total'] ?></small>
                         </small>
                         <span class="account"><?= $name ?></span>
                     </h5>
