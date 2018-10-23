@@ -182,8 +182,11 @@ class Log
             ];
             throw new RuntimeException('Upload error ' . ($errMap[$info['error']] ?? 'UNKOWN'));
         }
-        if ($info['size'] == 0) {
+        if ($info['size'] <= 0) {
             throw new RuntimeException('Upload size error');
+        }
+        if ($info['size'] > UPLOAD_MAX_FILE_SIZE) {
+            throw new RuntimeException('Upload file too big');
         }
         if (is_file($log->pathname())) {
             throw new RuntimeException('File was already uploaded');

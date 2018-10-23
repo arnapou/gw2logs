@@ -3,7 +3,11 @@
 use App\Api\Raids;
 
 require __DIR__ . '/../vendor/autoload.php';
-include __DIR__ . '/../templates/header.php';
+require __DIR__ . '/../templates/header.php';
+
+$ACCOUNT     = ACCOUNTS[$_GET['tab'] ?? ''] ?? [];
+$KEYS        = $ACCOUNT['keys'] ?? [];
+$HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
 
 ?>
     <style>
@@ -50,10 +54,10 @@ include __DIR__ . '/../templates/header.php';
     </style>
 
 <?php
-if ($SUMMARY ?? true) {
+if ($HAS_SUMMARY) {
     $TOTAL = 0;
     $NUM   = 0;
-    foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken) {
+    foreach ($KEYS as $name => $accessToken) {
         $data  = Raids::progress($accessToken);
         $TOTAL += $data['total'];
         $NUM   += $data['num'];
@@ -79,7 +83,7 @@ if ($SUMMARY ?? true) {
 ?>
 
     <div class="row">
-        <?php foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken): ?>
+        <?php foreach ($KEYS as $name => $accessToken): ?>
             <?php $data = Raids::progress($accessToken); ?>
 
             <div class="col-xl-3 col-lg-4 col-md-6">
@@ -118,4 +122,4 @@ if ($SUMMARY ?? true) {
 
 <?php
 
-include __DIR__ . '/../templates/footer.php';
+require __DIR__ . '/../templates/footer.php';

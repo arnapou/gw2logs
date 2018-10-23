@@ -6,14 +6,17 @@ use App\Logger\ProcessLogger;
 use App\LogMetadata;
 
 require __DIR__ . '/../vendor/autoload.php';
-include __DIR__ . '/../templates/header.php';
+require __DIR__ . '/../templates/header.php';
 
 if (isset($_REQUEST['history'])) {
-
+    $classes = [
+        'NOTICE' => 'table-warning',
+        'ERROR'  => 'table-danger',
+    ];
     ?>
-    <table class="table table-sm table-hover" style="margin-bottom: 15em">
+    <table class="table table-sm table-hover">
         <?php foreach (loadLines(200) as $cols): ?>
-            <tr class="<?= $cols[1] != 'INFO' ? 'table-danger' : '' ?>">
+            <tr class="<?= $classes[$cols[1]] ?? '' ?>">
                 <td><?= $cols[0] ?></td>
                 <td><?= $cols[1] ?></td>
                 <td><?= $cols[2] ?></td>
@@ -103,13 +106,16 @@ if (isset($_REQUEST['history'])) {
         <?php if ($LOGS->pageCount() > 1): ?>
             <nav>
                 <small class="float-right text-primary text-right">
-                    <a href="?history=1"><?= $LOGS->count() ?> logs &mdash; <?= sprintf('%0.0f MB', $LOGS->size()) ?> busy &mdash; <?= disk() ?> free</a>
+                    <a href="?history=1"><?= $LOGS->count() ?> logs</a> &mdash;
+                    <?= sprintf('%0.0f MB', $LOGS->size()) ?> busy &mdash;
+                    <?= disk() ?> free &mdash;
+                    <a href="/upload.php">upload</a>
                 </small>
                 <input type="hidden" name="offset" class="form-control" value="<?= $LOGS->offset() ?>">
                 <input type="hidden" name="length" class="form-control" value="<?= $LOGS->length() ?>">
                 <ul class="pagination">
                     <?php for ($p = 1; $p <= $LOGS->pageCount(); $p++): ?>
-                        <?php if ($p > 20): ?>
+                        <?php if ($p > 10): ?>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
                             <li class="page-item disabled"><span class="page-link"><?= $LOGS->pageCount() ?></span></li>
                             <?php break; ?>
@@ -137,7 +143,7 @@ if (isset($_REQUEST['history'])) {
     <?php
 }
 
-include __DIR__ . '/../templates/footer.php';
+require __DIR__ . '/../templates/footer.php';
 
 
 function lnk($url, $icon, $title = '')
@@ -210,6 +216,6 @@ function disk()
     $octets    = disk_free_space(__DIR__ . '/../logs/');
     $megaBytes = $octets / (1024 * 1024);
     return $megaBytes > 1024
-        ? number_format($megaBytes/1024, 1, '.', ',') . ' GB'
+        ? number_format($megaBytes / 1024, 1, '.', ',') . ' GB'
         : number_format($megaBytes, 0, '.', ',') . ' MB';
 }

@@ -8,6 +8,7 @@ use Psr\Log\AbstractLogger;
 
 class ProcessLogger extends AbstractLogger
 {
+    const CODE_NOTICE = 100;
     /**
      * @var bool|resource
      */

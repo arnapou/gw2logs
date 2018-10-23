@@ -1,6 +1,4 @@
-<?php
-$CURRENT_URL = isset(MENU[$_SERVER['PHP_SELF']]) ? $_SERVER['PHP_SELF'] : '';
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Gw2 <?= MENU[$CURRENT_URL] ?? '' ?></title>
@@ -9,15 +7,14 @@ $CURRENT_URL = isset(MENU[$_SERVER['PHP_SELF']]) ? $_SERVER['PHP_SELF'] : '';
     <script src="/assets/jquery/jquery-3.3.1.slim.min.js"></script>
     <link rel="icon" type="image/png" href="/assets/favicon.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            padding-bottom: 10em;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
+<?php
 
-    <ul class="nav nav-tabs" style="margin-top: 1em; margin-bottom: 1em">
-        <?php foreach (MENU as $url => $name): ?>
-            <li class="nav-item">
-                <a class="nav-link <?= $url === $CURRENT_URL ? 'active' : '' ?>" href="<?= $url ?>"><?= $name ?></a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-
+include __DIR__ . '/menu.php';

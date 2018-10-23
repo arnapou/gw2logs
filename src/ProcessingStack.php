@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Logger\ProcessLogger;
 use App\Processing\AbstractProcessing;
 use Psr\Log\LoggerInterface;
 
@@ -78,7 +79,11 @@ class ProcessingStack
                     $this->logger->info('processed', [$log->filename(), $tagName]);
                 }
             } catch (\Exception $exception) {
-                $this->logger->error($exception->getMessage(), [$log->filename(), $tagName]);
+                if ($exception->getCode() == ProcessLogger::CODE_NOTICE) {
+                    $this->logger->notice($exception->getMessage(), [$log->filename(), $tagName]);
+                } else {
+                    $this->logger->error($exception->getMessage(), [$log->filename(), $tagName]);
+                }
                 $this->errorProcessing($log);
             }
         }
