@@ -8,6 +8,7 @@ $CURRENT_URL = isset(MENU[$_SERVER['PHP_SELF']]) ? $_SERVER['PHP_SELF'] : '';
     <script src="/assets/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
     <script src="/assets/jquery/jquery-3.3.1.slim.min.js"></script>
     <link rel="icon" type="image/png" href="/assets/favicon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="container">

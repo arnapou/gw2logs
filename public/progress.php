@@ -49,18 +49,22 @@ $PCT = 100 * $NUM / ($TOTAL ?: 1);
             padding: 0 .5em 0 3em;
         }
 
-        .progress {
-            height: 2em;
-            margin-top: 1.5em;
-            margin-bottom: 1.5em;
+        .card-header .account {
+            font-size: 1rem;
+        }
+
+        .card-header .float-right {
+            padding-top: .2em;
         }
     </style>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-xl-3 col-lg-4 col-md-6">
             <div class="card">
                 <h5 class="card-header text-muted">
-                    <span class="float-right text-primary"><?= $NUM ?> / <?= $TOTAL ?></span>
+                    <span class="float-right text-primary">
+                        <?= $NUM ?> <small>/ <?= $TOTAL ?></small>
+                    </span>
                     Total : <?= round($PCT) ?>%
                 </h5>
             </div>
@@ -71,11 +75,13 @@ $PCT = 100 * $NUM / ($TOTAL ?: 1);
         <?php foreach (($ACCOUNTS ?? ACCOUNTS) as $name => $accessToken): ?>
             <?php $data = Raids::progress($accessToken); ?>
 
-            <div class="col-sm-4">
+            <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="card">
                     <h5 class="card-header">
-                        <small class="float-right"><?= $data['num'] ?> / <?= $data['total'] ?></small>
-                        <?= $name ?>
+                        <small class="float-right">
+                            <?= $data['num'] ?> <small>/ <?= $data['total'] ?></small>
+                        </small>
+                        <span class="account"><?= $name ?></span>
                     </h5>
                     <div class="card-body">
                         <?php foreach ($data['raids'] as $raid): ?>

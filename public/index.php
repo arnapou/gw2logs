@@ -55,13 +55,13 @@ if (isset($_REQUEST['history'])) {
     <form action="?" method="get" class="filtres">
 
         <div class="row">
-            <label for="filtre1" class="col-sm-1 col-form-label">Filtres</label>
+            <label for="filtre1" class="col-lg-1 col-form-label">Filtres</label>
             <?php for ($i = 0; $i < 4; $i++): ?>
-                <div class="col-sm-2">
+                <div class="col-lg-2">
                     <input type="text" name="filtres[]" class="form-control" value="<?= $LOGS->filtre($i) ?? '' ?>">
                 </div>
             <?php endfor; ?>
-            <div class="col-sm-3">
+            <div class="col-lg-3">
                 <button type="submit" class="btn btn-primary">OK</button>
                 <a href="/" class="btn btn-danger">Cancel</a>
             </div>
