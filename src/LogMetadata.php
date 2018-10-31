@@ -227,7 +227,7 @@ class LogMetadata
     {
         $time = (string)$this->data['encounterTime'];
         if (ctype_digit($time) && $time > 1e9) {
-            return new \DateTimeImmutable($time);
+            return new \DateTimeImmutable('@' . $time);
         }
         return $this->lastModified ?: new \DateTimeImmutable();
     }

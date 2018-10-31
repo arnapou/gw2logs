@@ -31,7 +31,7 @@ foreach (Log::all() as $log) {
         $metadata->getStatus() === LogMetadata::STATUS_KILL && $metadata->encounterTime() < $dateDeleteKill
     ) {
         $log->delete();
-        $this->logger->error('Delete expired file', [$log->filename(), 'process']);
+        $logger->error('Delete expired file', [$log->filename(), 'process']);
         continue;
     }
 
