@@ -192,7 +192,12 @@ require __DIR__ . '/../templates/footer.php';
 
 function bgTD($pct)
 {
-    $pct = 25 * floor(100 * $pct / 25) / 100;
+    if ($pct > 0 && $pct <= 0.5) {
+        $pct = 0.33;
+    } elseif ($pct > 0.5 && $pct < 1) {
+        $pct = 0.66;
+    }
+    $pct = (float)$pct;
     return "background: rgba(46, 117, 153, $pct);";
 }
 
