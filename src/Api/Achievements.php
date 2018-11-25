@@ -82,7 +82,7 @@ class Achievements
                 if (isset($achievs[$id])) {
                     $detail[$id]                = $achievs[$id];
                     $detail[$id]['rewardTypes'] = self::rewardTypes($achievs[$id], $titleId);
-                    $detail[$id]['unlocked']    = isset($unlocked[$id]) ? true : false;
+                    $detail[$id]['unlocked']    = isset($unlocked[$id]) ? ($unlocked[$id]['done']): false;
                     $detail[$id]['titleName']   = $titleId ? (Title::get($titleId)['name'] ?? '') : '';
                     $nbTotal++;
                     $nbUnlocked += $detail[$id]['unlocked'] ? 1 : 0;
