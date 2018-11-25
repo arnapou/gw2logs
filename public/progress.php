@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\Achievements;
 use App\Api\Raids;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -11,19 +12,39 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
 
 ?>
     <style>
+        .achiev {
+            font-size: .8em;
+            padding: .1em 0 !important;
+            text-align: center;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            background: #e6f7ff;
+            color: #adbcc4;
+        }
+
         .boss {
             font-size: .8em;
-            width: 3em;
-            padding: .1em 0;
+            padding: .1em 0 !important;
             text-align: center;
             border: 1px solid #b7e1cd;
             background: #e5ffed;
             color: #aec6b5;
+            width: 3em;
+        }
+
+        .achiev {
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .boss.type-E {
             background: #eee;
             color: #bbb;
+        }
+
+        .achiev.unlocked {
+            background: #2e7599;
+            color: #fff;
         }
 
         .boss.done {
@@ -40,8 +61,17 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
             border-spacing: 0 !important;
         }
 
-        .card-body table td:first-child {
+        .card-body.raid table td:first-child {
             padding: 0 .5em 0 3em;
+        }
+
+        .card-body.achievements table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .card-body.achievements table td:first-child {
+            width: 2em;
         }
 
         .card-header .account {
@@ -50,6 +80,14 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
 
         .card-header small.float-right {
             padding-top: .2em;
+        }
+
+        .card-body {
+            border-bottom: 1px solid rgba(0, 0, 0, .125);
+        }
+
+        .card-body:last-child {
+            border-bottom: none;
         }
     </style>
 
@@ -85,6 +123,7 @@ if ($HAS_SUMMARY) {
     <div class="row">
         <?php foreach ($KEYS as $name => $accessToken): ?>
             <?php $data = Raids::progress($accessToken); ?>
+            <?php $categs = Achievements::getAchievements($accessToken); ?>
 
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="card">
@@ -95,7 +134,7 @@ if ($HAS_SUMMARY) {
                         </small>
                         <span class="account"><?= $name ?></span>
                     </h5>
-                    <div class="card-body">
+                    <div class="card-body raid">
                         <?php foreach ($data['raids'] as $raid): ?>
                             <div><?= $raid['title'] ?></div>
                             <table>
@@ -112,6 +151,22 @@ if ($HAS_SUMMARY) {
                             </table>
                         <?php endforeach; ?>
                     </div>
+                    <div class="card-body achievements">
+                        <?php foreach ($categs as $index => $categ): ?>
+                            <table>
+                                <tr>
+                                    <td title="<?= t($categ['name']) ?>">W<?= $index + 1 ?></td>
+                                    <?php foreach ($categ['achievements'] as $achiev): ?>
+                                        <td class="achiev <?= ($achiev['unlocked'] ?? false) ? 'un' : '' ?>locked"
+                                            title="<?= t($achiev['requirement'] ?? '') . "\n" . rwd($achiev['rewardTypes']) ?>"
+                                        >
+                                            <?= rwd($achiev['rewardTypes']) ?>
+                                        </td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            </table>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
 
             </div>
@@ -123,3 +178,23 @@ if ($HAS_SUMMARY) {
 <?php
 
 require __DIR__ . '/../templates/footer.php';
+
+function rwd($rewards)
+{
+    $str = '';
+    if (in_array('mastery', $rewards)) {
+        $str .= '&#x2735; ';
+    }
+    if (in_array('title', $rewards)) {
+        $str .= '&#x1f396; ';
+    }
+    if (in_array('item', $rewards)) {
+        $str .= '&#x1f4b0; ';
+    }
+    return str_replace(' ', '&nbsp; &nbsp; ', trim($str));
+}
+
+function t($str)
+{
+    return htmlspecialchars($str);
+}

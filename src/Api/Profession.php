@@ -41,7 +41,7 @@ class Profession
             function () {
                 return Utils::curl('GET', 'https://api.guildwars2.com/v2/professions?ids=all');
             },
-            3600
+            3600*12
         );
     }
 }

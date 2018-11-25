@@ -46,7 +46,7 @@ class Gw2RaidarUrlProcessing extends AbstractProcessing
     /**
      * @return array
      */
-    private function getEncounters()
+    public function getEncounters()
     {
         return Utils::cached(
             'gw2raidarurl_encounters',
