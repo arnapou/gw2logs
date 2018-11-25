@@ -16,8 +16,6 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
             font-size: .8em;
             padding: 0 !important;
             text-align: center;
-            border-right: 1px solid #fff;
-            border-bottom: 1px solid #fff;
             color: #fff;
         }
 
@@ -68,6 +66,11 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
             table-layout: fixed;
             width: 100%;
             background: #b33737;
+        }
+
+        .card-body.achievements table td {
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
         }
 
         .card-body.achievements table td:first-child {
