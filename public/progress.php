@@ -14,12 +14,12 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
     <style>
         .achiev {
             font-size: .8em;
-            padding: .1em 0 !important;
+            padding: 0 !important;
             text-align: center;
             border-right: 1px solid #fff;
             border-bottom: 1px solid #fff;
-            background: #e6f7ff;
-            color: #adbcc4;
+            background: #b33737;
+            color: #fff;
         }
 
         .boss {
@@ -72,6 +72,7 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
 
         .card-body.achievements table td:first-child {
             width: 2em;
+            padding: 0;
         }
 
         .card-header .account {
@@ -158,7 +159,13 @@ if ($HAS_SUMMARY) {
                                     <td title="<?= t($categ['name']) ?>">W<?= $index + 1 ?></td>
                                     <?php foreach ($categ['achievements'] as $achiev): ?>
                                         <td class="achiev <?= ($achiev['unlocked'] ?? false) ? 'un' : '' ?>locked"
-                                            title="<?= t($achiev['requirement'] ?? '') . "\n" . rwd($achiev['rewardTypes']) ?>"
+                                            title="<?=
+                                            t($achiev['name'] ?? '') . "\n" .
+                                            (($achiev['description'] ?? false) ? '&#x2b9e; ' . t($achiev['description']) . "\n" : '') .
+                                            (($achiev['requirement'] ?? false) ? '&#x2b9e; ' . t($achiev['requirement']) . "\n" : '') .
+                                            (($achiev['titleName'] ?? false) ? '&#x2b9e; ' . t('Titre : "' . $achiev['titleName'] . '"') . "\n" : '') .
+                                            rwd($achiev['rewardTypes'])
+                                            ?>"
                                         >
                                             <?= rwd($achiev['rewardTypes']) ?>
                                         </td>
@@ -182,11 +189,11 @@ require __DIR__ . '/../templates/footer.php';
 function rwd($rewards)
 {
     $str = '';
-    if (in_array('mastery', $rewards)) {
-        $str .= '&#x2735; ';
-    }
     if (in_array('title', $rewards)) {
         $str .= '&#x1f396; ';
+    }
+    if (in_array('mastery', $rewards)) {
+        $str .= '&#x2735; ';
     }
     if (in_array('item', $rewards)) {
         $str .= '&#x1f4b0; ';

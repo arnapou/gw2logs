@@ -80,10 +80,10 @@ class Achievements
             $detail     = [];
             foreach (($category['achievements'] ?? []) as $id) {
                 if (isset($achievs[$id])) {
-                    $detail[$id] = $achievs[$id] + [
-                            'rewardTypes' => self::rewardTypes($achievs[$id]),
-                            'unlocked'    => isset($unlocked[$id]) ? true : false,
-                        ];
+                    $detail[$id]                = $achievs[$id];
+                    $detail[$id]['rewardTypes'] = self::rewardTypes($achievs[$id], $titleId);
+                    $detail[$id]['unlocked']    = isset($unlocked[$id]) ? true : false;
+                    $detail[$id]['titleName']   = $titleId ? (Title::get($titleId)['name'] ?? '') : '';
                     $nbTotal++;
                     $nbUnlocked += $detail[$id]['unlocked'] ? 1 : 0;
                 }
@@ -114,18 +114,20 @@ class Achievements
 
     /**
      * @param $data
+     * @param $titleId
      * @return array
      */
-    static private function rewardTypes($data)
+    static private function rewardTypes($data, &$titleId)
     {
-        $types = [];
+        $titleId = null;
+        $types   = [];
         foreach (($data['rewards'] ?? []) as $reward) {
-            if (in_array(($reward['type'] ?? ''), [
-                'Mastery',
-                'Item',
-                'Title',
-            ])) {
-                $types[] = strtolower($reward['type']);
+            if ($reward['type'] ?? false) {
+                $type = strtolower($reward['type']);
+                if ($type === 'title' && isset($reward['id'])) {
+                    $titleId = $reward['id'];
+                }
+                $types[] = $type;
             }
         }
         return $types;
