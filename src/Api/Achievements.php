@@ -82,7 +82,7 @@ class Achievements
                 if (isset($achievs[$id])) {
                     $detail[$id]                = $achievs[$id];
                     $detail[$id]['rewardTypes'] = self::rewardTypes($achievs[$id], $titleId);
-                    $detail[$id]['unlocked']    = isset($unlocked[$id]) ? ($unlocked[$id]['done']): false;
+                    $detail[$id]['unlocked']    = isset($unlocked[$id]) ? self::unlockedPct($unlocked[$id]) : false;
                     $detail[$id]['titleName']   = $titleId ? (Title::get($titleId)['name'] ?? '') : '';
                     $nbTotal++;
                     $nbUnlocked += $detail[$id]['unlocked'] ? 1 : 0;
@@ -93,6 +93,20 @@ class Achievements
             $details[]                = $category;
         }
         return $details;
+    }
+
+    /**
+     * @param $data
+     * @return float|int
+     */
+    static public function unlockedPct($data)
+    {
+        if ($data['done'] ?? true) {
+            return 1;
+        } elseif (isset($data['current'], $data['max'])) {
+            return $data['max'] ? round($data['current'] / $data['max'], 2) : 0;
+        }
+        return 0;
     }
 
     /**

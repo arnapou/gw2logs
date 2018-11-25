@@ -18,7 +18,6 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
             text-align: center;
             border-right: 1px solid #fff;
             border-bottom: 1px solid #fff;
-            background: #b33737;
             color: #fff;
         }
 
@@ -43,7 +42,7 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
         }
 
         .achiev.unlocked {
-            background: #2e7599;
+            background: rgba(46, 117, 153, 0);
             color: #fff;
         }
 
@@ -68,11 +67,13 @@ $HAS_SUMMARY = $ACCOUNT['summary'] ?? true;
         .card-body.achievements table {
             table-layout: fixed;
             width: 100%;
+            background: #b33737;
         }
 
         .card-body.achievements table td:first-child {
-            width: 2em;
+            width: 1.8em;
             padding: 0;
+            background: #fff;
         }
 
         .card-header .account {
@@ -158,7 +159,7 @@ if ($HAS_SUMMARY) {
                                 <tr>
                                     <td title="<?= t($categ['name']) ?>">W<?= $index + 1 ?></td>
                                     <?php foreach ($categ['achievements'] as $achiev): ?>
-                                        <td class="achiev <?= ($achiev['unlocked'] ?? false) ? 'un' : '' ?>locked"
+                                        <td class="achiev" style="<?= bgTD($achiev['unlocked'] ?? 0) ?>"
                                             title="<?=
                                             t($achiev['name'] ?? '') . "\n" .
                                             (($achiev['description'] ?? false) ? '&#x2b9e; ' . t($achiev['description']) . "\n" : '') .
@@ -185,6 +186,12 @@ if ($HAS_SUMMARY) {
 <?php
 
 require __DIR__ . '/../templates/footer.php';
+
+function bgTD($pct)
+{
+    $pct = 25 * floor(100 * $pct / 25) / 100;
+    return "background: rgba(46, 117, 153, $pct);";
+}
 
 function rwd($rewards)
 {
