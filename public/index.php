@@ -117,7 +117,7 @@ if (isset($_REQUEST['history'])) {
                     <?php for ($p = 1; $p <= $LOGS->pageCount(); $p++): ?>
                         <?php if ($p > 10): ?>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
-                            <li class="page-item disabled"><span class="page-link"><?= $LOGS->pageCount() ?></span></li>
+                            <button type="submit" class="page-link" data-offset="<?= $LOGS->length() * ($LOGS->pageCount() - 1) ?>"><?= $LOGS->pageCount() ?></button>
                             <?php break; ?>
                         <?php else: ?>
                             <li class="page-item <?= $LOGS->pageNum() == $p ? 'active' : '' ?>">
