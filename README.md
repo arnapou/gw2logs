@@ -12,4 +12,4 @@ Technical informations for those interested :
 ### Links
 
 * [Screenshots](doc/screenshots.md)
-* [Live demo](http://gw2logs.arnapou.net/d)
+* [Live demo](http://gw2logs.arnapou.net/)
