@@ -3,7 +3,6 @@
 
 namespace App\Api;
 
-
 use App\Utils;
 
 class Profession
@@ -12,7 +11,7 @@ class Profession
      * @param $player
      * @return array
      */
-    static public function fromPlayer($player)
+    public static function fromPlayer($player)
     {
         $elite_spec = $player['elite_spec'] ?? 0;
         foreach (self::getAllProfessions() as $profession) {
@@ -34,7 +33,7 @@ class Profession
     /**
      * @return mixed|null
      */
-    static private function getAllProfessions()
+    private static function getAllProfessions()
     {
         return Utils::cached(
             'api_professions_all',

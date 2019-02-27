@@ -3,7 +3,6 @@
 
 namespace App;
 
-
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\PhpFilesCache;
 
@@ -19,7 +18,7 @@ class Utils
      * @return mixed
      * @throws \Exception
      */
-    static public function jsonDecode($data)
+    public static function jsonDecode($data)
     {
         $json = trim($data);
         if ($json === '') {
@@ -41,7 +40,7 @@ class Utils
                 JSON_ERROR_INF_OR_NAN       => 'Inf or NaN',
                 JSON_ERROR_UNSUPPORTED_TYPE => 'Unsupported type.',
             ];
-            throw new \Exception('Json error : ' . (isset($errors[$jsonLastError]) ? $errors[$jsonLastError] : 'Unknown error'));
+            throw new \Exception('Json error : ' . ($errors[$jsonLastError] ?? 'Unknown error'));
         }
         return $array;
     }
@@ -53,7 +52,7 @@ class Utils
      * @param array  $headers
      * @return mixed
      */
-    static public function curl($method, $url, $body = null, $headers = [])
+    public static function curl($method, $url, $body = null, $headers = [])
     {
         $ch = curl_init();
 
@@ -79,7 +78,7 @@ class Utils
         curl_close($ch);
 
 //        if ($httpcode != 200) {
-////            print_r($result);
+        ////            print_r($result);
 //            throw new \RuntimeException("Http return code = $httpcode");
 //        } else {
         return self::jsonDecode($result);
@@ -92,7 +91,7 @@ class Utils
      * @param int      $ttl
      * @return mixed|null
      */
-    static public function cached($key, $callable, $ttl)
+    public static function cached($key, $callable, $ttl)
     {
         if (!self::cache()->has($key)) {
             $value = $callable();
@@ -105,7 +104,7 @@ class Utils
     /**
      * @return CacheInterface
      */
-    static protected function cache()
+    protected static function cache()
     {
         if (self::$cache === null) {
             self::$cache = new PhpFilesCache();
@@ -117,7 +116,7 @@ class Utils
      * @param $filename
      * @param $content
      */
-    static public function writeFile($filename, $content)
+    public static function writeFile($filename, $content)
     {
         file_put_contents($filename, $content, LOCK_EX);
         chmod($filename, 0777);
@@ -127,7 +126,7 @@ class Utils
      * @param $filename
      * @param $content
      */
-    static public function writeJson($filename, $content)
+    public static function writeJson($filename, $content)
     {
         self::writeFile($filename, json_encode($content, JSON_PRETTY_PRINT));
     }
@@ -136,9 +135,9 @@ class Utils
      * @param $filename
      * @param $content
      */
-    static public function writePhp($filename, $content)
+    public static function writePhp($filename, $content)
     {
-        self::writeFile($filename, "<?php return " . var_export($content, true) . ";\n");
+        self::writeFile($filename, '<?php return ' . var_export($content, true) . ";\n");
     }
 
     /**
@@ -157,5 +156,4 @@ class Utils
         }
         return $value;
     }
-
 }

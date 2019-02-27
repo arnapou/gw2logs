@@ -12,8 +12,7 @@ if (isset($_REQUEST['history'])) {
     $classes = [
         'NOTICE' => 'table-warning',
         'ERROR'  => 'table-danger',
-    ];
-    ?>
+    ]; ?>
     <table class="table table-sm table-hover">
         <?php foreach (loadLines(200) as $cols): ?>
             <tr class="<?= $classes[$cols[1]] ?? '' ?>">
@@ -26,19 +25,15 @@ if (isset($_REQUEST['history'])) {
         <?php endforeach; ?>
     </table>
     <?php
-
 } else {
+        \define('EMPTY_TEXT', '<em class="text-muted">-</em>');
+        \define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
 
-    define('EMPTY_TEXT', '<em class="text-muted">-</em>');
-    define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
-
-    $LOGS = Log::all(
+        $LOGS = Log::all(
         $_REQUEST['filtres'] ?? [],
         $_REQUEST['offset'] ?? 0,
         $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
-    );
-
-    ?>
+    ); ?>
     <style>
         tr img {
             max-height: 1.4em;
@@ -87,8 +82,7 @@ if (isset($_REQUEST['history'])) {
             <?php foreach ($LOGS as $log) : ?>
                 <?php
                 $metadata = $log->metadata();
-                $player   = player($log->metadata());
-                ?>
+        $player   = player($log->metadata()); ?>
                 <tr class="<?= $metadata->getStatus() ?>">
                     <td class="xs"><a href="/dl.php?log=<?= $log->filename() ?>"><img src="/assets/zip.png"/></a></td>
                     <td class="xs"><?= wday($log) ?></td>
@@ -139,7 +133,7 @@ if (isset($_REQUEST['history'])) {
     </script>
 
     <?php
-}
+    }
 
 require __DIR__ . '/../templates/footer.php';
 
@@ -199,20 +193,20 @@ function loadLines($nb)
             $columns = strpos($line, "\t") !== false
                 ? explode("\t", $line)
                 : explode('    ', $line);
-            if (count($columns) >= 5) {
+            if (\count($columns) >= 5) {
                 return array_map('trim', $columns);
             }
         }
         return null;
     };
     $lines     = [];
-    $fp        = fopen(ProcessLogger::getFilename(), "r");
+    $fp        = fopen(ProcessLogger::getFilename(), 'r');
     while (!feof($fp)) {
         $line    = fgets($fp, 40960);
         $columns = $parseLine($line);
         if ($columns) {
             array_push($lines, $columns);
-            if (count($lines) > $nb) {
+            if (\count($lines) > $nb) {
                 array_shift($lines);
             }
         }

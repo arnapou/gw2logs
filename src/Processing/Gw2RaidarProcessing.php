@@ -8,7 +8,6 @@ use App\Utils;
 
 class Gw2RaidarProcessing extends AbstractProcessing
 {
-
     use Gw2RaidarTrait;
 
     /**
@@ -27,7 +26,7 @@ class Gw2RaidarProcessing extends AbstractProcessing
     {
         $data = Utils::curl(
             'PUT',
-            GW2RAIDAR_URL . "api/v2/encounters/new",
+            GW2RAIDAR_URL . 'api/v2/encounters/new',
             ['file' => curl_file_create($log->pathname())],
             $this->getAuthorizationHeaders()
         );
@@ -38,5 +37,4 @@ class Gw2RaidarProcessing extends AbstractProcessing
 
         Utils::writeJson($log->path() . '/gw2raidar.json', $data);
     }
-
 }

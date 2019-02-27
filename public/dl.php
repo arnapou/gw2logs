@@ -14,18 +14,16 @@ try {
         throw new Exception('404 File not Found', 404);
     }
 
-    header("Pragma: public");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Cache-Control: public");
-    header("Content-Description: File Transfer");
-    header("Content-type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=\"" . $log->filename() . "\"");
-    header("Content-Transfer-Encoding: binary");
-    header("Content-Length: " . filesize($log->pathname()));
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Cache-Control: public');
+    header('Content-Description: File Transfer');
+    header('Content-type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $log->filename() . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Content-Length: ' . filesize($log->pathname()));
     readfile($log->pathname());
-
-
 } catch (\Exception $exception) {
     header($exception->getMessage(), true, $exception->getCode());
     echo $exception->getMessage() . "\n";

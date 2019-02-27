@@ -3,7 +3,6 @@
 
 namespace App\Api;
 
-
 use App\Utils;
 
 class Raids
@@ -12,7 +11,7 @@ class Raids
      * @param $accessToken
      * @return array
      */
-    static public function progress($accessToken)
+    public static function progress($accessToken)
     {
         $raids    = self::getAllRaids();
         $unlocked = self::unlocked($accessToken);
@@ -28,7 +27,7 @@ class Raids
                 $bossNum = 1;
                 $cases   = [];
                 foreach ($wing['events'] as $event) {
-                    $done = in_array($event['id'], $unlocked);
+                    $done = \in_array($event['id'], $unlocked);
                     $txt  = '?';
                     if ($event['type'] == 'Boss') {
                         $txt = 'B' . ($bossNum++);
@@ -40,7 +39,7 @@ class Raids
 
                     $cases[] = [$txt, $done];
                 }
-                $cols    = count($cases) > $cols ? count($cases) : $cols;
+                $cols    = \count($cases) > $cols ? \count($cases) : $cols;
                 $table[] = ['title' => 'W' . ($wingNum++), 'cases' => $cases];
             }
             $progress[] = [
@@ -57,7 +56,7 @@ class Raids
         return $progress;
     }
 
-    static private function cleanText($str)
+    private static function cleanText($str)
     {
         return ucfirst(str_replace('_', ' ', $str));
     }
@@ -66,7 +65,7 @@ class Raids
      * @param $accessToken
      * @return mixed|null
      */
-    static private function unlocked($accessToken)
+    private static function unlocked($accessToken)
     {
         return Utils::cached(
             'api_raids_unlocked_' . md5($accessToken),
@@ -80,7 +79,7 @@ class Raids
     /**
      * @return array
      */
-    static private function getAllRaids()
+    private static function getAllRaids()
     {
         return Utils::cached(
             'api_raids_all',

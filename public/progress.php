@@ -105,9 +105,7 @@ if ($HAS_SUMMARY) {
         $TOTAL += $data['total'];
         $NUM   += $data['num'];
     }
-    $PCT = 100 * $NUM / ($TOTAL ?: 1);
-
-    ?>
+    $PCT = 100 * $NUM / ($TOTAL ?: 1); ?>
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-md-6">
             <div class="card">
@@ -204,13 +202,13 @@ function bgTD($pct)
 function rwd($rewards)
 {
     $str = '';
-    if (in_array('title', $rewards)) {
+    if (\in_array('title', $rewards)) {
         $str .= '&#x1f396; ';
     }
-    if (in_array('mastery', $rewards)) {
+    if (\in_array('mastery', $rewards)) {
         $str .= '&#x2735; ';
     }
-    if (in_array('item', $rewards)) {
+    if (\in_array('item', $rewards)) {
         $str .= '&#x1f4b0; ';
     }
     return str_replace(' ', '&nbsp; &nbsp; ', trim($str));

@@ -3,7 +3,6 @@
 
 namespace App\Processing;
 
-
 use App\Utils;
 
 trait Gw2RaidarTrait
@@ -14,7 +13,7 @@ trait Gw2RaidarTrait
      */
     private function getAuthorizationHeaders()
     {
-        return ["Authorization: Token " . $this->getToken()];
+        return ['Authorization: Token ' . $this->getToken()];
     }
 
     /**
@@ -25,7 +24,7 @@ trait Gw2RaidarTrait
         return Utils::cached(
             'gw2raidar_token_' . md5(GW2RAIDAR_USER),
             function () {
-                $data = Utils::curl('POST', GW2RAIDAR_URL . "api/v2/token", [
+                $data = Utils::curl('POST', GW2RAIDAR_URL . 'api/v2/token', [
                     'username' => GW2RAIDAR_USER,
                     'password' => GW2RAIDAR_PASS,
                 ]);

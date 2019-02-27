@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use CallbackFilterIterator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -141,17 +140,13 @@ class Log
             . ' ' . substr($this->time, 0, 2) . ':' . substr($this->time, 2, 2);
     }
 
-    /**
-     *
-     */
+    
     public function delete()
     {
         $this->deleted = true;
     }
 
-    /**
-     *
-     */
+    
     public function __destruct()
     {
         if ($this->deleted) {
@@ -167,7 +162,7 @@ class Log
      * @param array $info
      * @return Log
      */
-    static public function upload(array $info)
+    public static function upload(array $info)
     {
         $log = new self($info['name']);
         if ($info['error'] !== UPLOAD_ERR_OK) {
@@ -209,11 +204,11 @@ class Log
      * @param int   $length
      * @return LogList
      */
-    static function all($filtres = [], $offset = 0, $length = 100)
+    public static function all($filtres = [], $offset = 0, $length = 100)
     {
         $offset    = Utils::validInteger($offset, 0, 0);
         $length    = Utils::validInteger($length, 0, 100);
-        $filtres   = is_array($filtres) ? $filtres : [];
+        $filtres   = \is_array($filtres) ? $filtres : [];
         $directory = new \RecursiveDirectoryIterator(__DIR__ . '/../logs', \FilesystemIterator::SKIP_DOTS);
         $iterator  = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::LEAVES_ONLY);
         $logs      = iterator_to_array(
@@ -236,5 +231,4 @@ class Log
         });
         return new LogList($logs, $offset, $length, $filtres);
     }
-
 }

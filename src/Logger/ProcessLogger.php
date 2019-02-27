@@ -3,7 +3,6 @@
 
 namespace App\Logger;
 
-
 use Psr\Log\AbstractLogger;
 
 class ProcessLogger extends AbstractLogger
@@ -17,7 +16,7 @@ class ProcessLogger extends AbstractLogger
     /**
      * @return string
      */
-    static public function getFilename()
+    public static function getFilename()
     {
         return __DIR__ . '/../../logs/process.log';
     }
@@ -47,7 +46,7 @@ class ProcessLogger extends AbstractLogger
         $columns[] = $message;
 
         array_walk($columns, function (&$str) {
-            $str = str_replace("\t", " ", $str);
+            $str = str_replace("\t", ' ', $str);
         });
 
         $line = implode("\t", $columns) . "\n";

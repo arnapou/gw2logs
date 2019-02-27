@@ -3,7 +3,6 @@
 
 namespace App;
 
-
 class LogMetadata
 {
     const TAG_PROCESSING = 'processing';
@@ -187,7 +186,7 @@ class LogMetadata
      */
     public function hasTag($tag)
     {
-        return in_array($tag, $this->data['tags']);
+        return \in_array($tag, $this->data['tags']);
     }
 
     /**
@@ -271,9 +270,7 @@ class LogMetadata
         return $this->path . '/metadata.php';
     }
 
-    /**
-     *
-     */
+    
     public function load()
     {
         if (\is_file($this->filename())) {

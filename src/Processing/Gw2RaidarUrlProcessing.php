@@ -6,8 +6,6 @@ use App\Log;
 use App\Logger\ProcessLogger;
 use App\LogMetadata;
 use App\Utils;
-use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\Cache\Simple\PhpFilesCache;
 
 class Gw2RaidarUrlProcessing extends AbstractProcessing
 {
@@ -53,12 +51,14 @@ class Gw2RaidarUrlProcessing extends AbstractProcessing
             function () {
                 $data = Utils::curl(
                     'GET',
-                    GW2RAIDAR_URL . "api/v2/encounters?limit=1000",
+                    GW2RAIDAR_URL . 'api/v2/encounters?limit=1000',
                     null,
                     $this->getAuthorizationHeaders()
                 );
                 return $data['results'] ?? [];
-            }, 300);
+            },
+            300
+        );
     }
 
     /**

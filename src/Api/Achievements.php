@@ -3,16 +3,14 @@
 
 namespace App\Api;
 
-
 use App\Utils;
 
 class Achievements
 {
-
     /**
      * @return array
      */
-    static private function getCategoryIds()
+    private static function getCategoryIds()
     {
         return [
             'W1' => 124,
@@ -28,12 +26,12 @@ class Achievements
      * @param $accessToken
      * @return mixed|null
      */
-    static public function unlocked($accessToken)
+    public static function unlocked($accessToken)
     {
         return Utils::cached(
             'api_achiev_unlocked_' . md5($accessToken . serialize(self::getAchievementsIds())),
             function () use ($accessToken) {
-                $ids = rawurlencode(implode(",", self::getAchievementsIds()));
+                $ids = rawurlencode(implode(',', self::getAchievementsIds()));
                 return self::idAsKey(
                     Utils::curl('GET', 'https://api.guildwars2.com/v2/account/achievements?access_token=' . $accessToken . '&ids=' . $ids)
                 );
@@ -45,7 +43,7 @@ class Achievements
     /**
      * @return array
      */
-    static public function getAchievementsIds()
+    public static function getAchievementsIds()
     {
         $ids = [];
         foreach (self::getCategories() as $category) {
@@ -59,12 +57,12 @@ class Achievements
     /**
      * @return array
      */
-    static public function getAchievements($accessToken = null)
+    public static function getAchievements($accessToken = null)
     {
         $achievs  = Utils::cached(
             'api_achiev_detail_' . md5(serialize(self::getAchievementsIds())),
             function () {
-                $ids = rawurlencode(implode(",", self::getAchievementsIds()));
+                $ids = rawurlencode(implode(',', self::getAchievementsIds()));
                 return self::idAsKey(
                     Utils::curl('GET', 'https://api.guildwars2.com/v2/achievements?lang=fr&ids=' . $ids)
                 );
@@ -99,7 +97,7 @@ class Achievements
      * @param $data
      * @return float|int
      */
-    static public function unlockedPct($data)
+    public static function unlockedPct($data)
     {
         if ($data['done'] ?? true) {
             return 1;
@@ -112,12 +110,12 @@ class Achievements
     /**
      * @return array
      */
-    static public function getCategories()
+    public static function getCategories()
     {
         return Utils::cached(
             'api_achiev_categories_' . md5(serialize(self::getCategoryIds())),
             function () {
-                $ids = rawurlencode(implode(",", self::getCategoryIds()));
+                $ids = rawurlencode(implode(',', self::getCategoryIds()));
                 return self::idAsKey(
                     Utils::curl('GET', 'https://api.guildwars2.com/v2/achievements/categories?lang=en&ids=' . $ids)
                 );
@@ -131,7 +129,7 @@ class Achievements
      * @param $titleId
      * @return array
      */
-    static private function rewardTypes($data, &$titleId)
+    private static function rewardTypes($data, &$titleId)
     {
         $titleId = null;
         $types   = [];
@@ -151,7 +149,7 @@ class Achievements
      * @param $items
      * @return array
      */
-    static private function idAsKey($items)
+    private static function idAsKey($items)
     {
         $return = [];
         foreach ($items as $item) {

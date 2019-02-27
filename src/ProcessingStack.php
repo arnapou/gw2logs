@@ -3,7 +3,6 @@
 
 namespace App;
 
-
 use App\Logger\ProcessLogger;
 use App\Processing\AbstractProcessing;
 use Psr\Log\LoggerInterface;
@@ -63,9 +62,7 @@ class ProcessingStack
         $this->logs[] = $log;
     }
 
-    /**
-     *
-     */
+    
     public function process()
     {
         $tagName = $this->processing->getTagName();
@@ -134,5 +131,4 @@ class ProcessingStack
     {
         return time() - $metadata->get(self::KEY_FIRST_PROCESSING) > PROCESS_TTL_BEFORE_DISABLED;
     }
-
 }

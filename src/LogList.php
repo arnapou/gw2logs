@@ -3,7 +3,6 @@
 
 namespace App;
 
-
 use Traversable;
 
 class LogList implements \IteratorAggregate
@@ -46,7 +45,7 @@ class LogList implements \IteratorAggregate
         $this->offset    = $offset;
         $this->length    = $length ?: 100;
         $this->pageNum   = floor($this->offset / $this->length) + 1;
-        $this->pageCount = ceil(count($this->logs) / $this->length);
+        $this->pageCount = ceil(\count($this->logs) / $this->length);
         $this->filtres   = $filtres;
     }
 
@@ -55,7 +54,7 @@ class LogList implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayIterator(array_slice($this->logs, $this->offset, $this->length));
+        return new \ArrayIterator(\array_slice($this->logs, $this->offset, $this->length));
     }
 
     /**
@@ -95,7 +94,7 @@ class LogList implements \IteratorAggregate
      */
     public function count()
     {
-        return count($this->logs);
+        return \count($this->logs);
     }
 
     /**
@@ -126,5 +125,4 @@ class LogList implements \IteratorAggregate
         }
         return $size / (1024 * 1024);
     }
-
 }

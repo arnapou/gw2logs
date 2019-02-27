@@ -1,6 +1,19 @@
 {
     "name": "arnapou/gw2logs",
     "description": "GW2 logs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arnaud Buathier",
+            "email": "arnaud@arnapou.net",
+            "homepage": "http://arnapou.net"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
     "require": {
         "php": ">= 7.2",
         "symfony/cache": "^4.0",

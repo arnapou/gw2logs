@@ -5,17 +5,14 @@ use App\Log;
 require __DIR__ . '/../vendor/autoload.php';
 
 if (isset($_FILES[UPLOAD_NO_AUTH_PARAMETER_NAME])) {
-
     $log = Log::upload($_FILES[UPLOAD_NO_AUTH_PARAMETER_NAME]);
-    echo "OK " . $log->filename() . "\n";
+    echo 'OK ' . $log->filename() . "\n";
     exit;
-
 }
 
 require __DIR__ . '/../templates/header.php';
 
 if (isset($_FILES['files'])) {
-
     $api_key = $_REQUEST['api_key'] ?? '';
     if (!api_key_exists($api_key)) {
         ?>
@@ -26,8 +23,7 @@ if (isset($_FILES['files'])) {
 
         foreach (explode_files($_FILES['files']) as $file) {
             try {
-                $log = Log::upload($file);
-                ?>
+                $log = Log::upload($file); ?>
                 <div class="alert alert-success"><?= $file['name'] ?> &mdash; OK</div>
                 <?php
             } catch (\Exception $exception) {
@@ -36,9 +32,7 @@ if (isset($_FILES['files'])) {
                 <?php
             }
         }
-
     }
-
 }
 
 ?>

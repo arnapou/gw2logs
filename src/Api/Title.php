@@ -3,18 +3,15 @@
 
 namespace App\Api;
 
-
 use App\Utils;
 
 class Title
 {
-
-
     /**
      * @param $id
      * @return array
      */
-    static public function get($id)
+    public static function get($id)
     {
         return Utils::cached(
             'api_title_fr_' . $id,
@@ -24,5 +21,4 @@ class Title
             3600 * 24 * 7
         );
     }
-
 }

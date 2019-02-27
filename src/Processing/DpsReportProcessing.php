@@ -23,7 +23,7 @@ class DpsReportProcessing extends AbstractProcessing
     {
         $data = Utils::curl(
             'POST',
-            DPSREPORT_URL . "uploadContent?json=1&generator=ei&userToken=" . DPSREPORT_TOKEN,
+            DPSREPORT_URL . 'uploadContent?json=1&generator=ei&userToken=' . DPSREPORT_TOKEN,
             ['file' => curl_file_create($log->pathname())]
         );
 

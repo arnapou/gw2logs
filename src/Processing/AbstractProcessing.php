@@ -3,7 +3,6 @@
 
 namespace App\Processing;
 
-
 use App\Log;
 use App\Utils;
 use Psr\SimpleCache\CacheInterface;
@@ -59,5 +58,4 @@ abstract class AbstractProcessing
      * @return string
      */
     abstract public function getTagName();
-
 }
