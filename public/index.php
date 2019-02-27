@@ -30,9 +30,9 @@ if (isset($_REQUEST['history'])) {
         \define('PROCESSING_TEXT', '<em class="text-muted">processing</em>');
 
         $LOGS = Log::all(
-        $_REQUEST['filtres'] ?? [],
-        $_REQUEST['offset'] ?? 0,
-        $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
+            $_REQUEST['filtres'] ?? [],
+            $_REQUEST['offset'] ?? 0,
+            $_REQUEST['length'] ?? LOGS_DEFAULT_PAGE_LENGTH
     ); ?>
     <style>
         tr img {
