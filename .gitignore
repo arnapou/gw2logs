@@ -4,5 +4,6 @@ tmp
 config.php
 mep.sh
 .php_cs.cache
+composer.lock
 githubhook.log
 
