@@ -16,6 +16,9 @@ use App\Utils;
 class Achievements
 {
     /**
+     * Link to search the category :
+     * https://api.guildwars2.com/v2/achievements/categories?ids=all
+     *
      * @return array
      */
     private static function getCategoryIds()
